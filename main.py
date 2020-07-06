@@ -8,8 +8,8 @@ from classes.diskspace import Disk
 def main():
 	msg = EmailMessage()
 	msg['Subject'] = 'Server Status'
-	msg['From'] = 'abiskartimsina4mini@gmail.com'
-	msg['To'] = 'abiskartimsina4@gmail.com'
+	msg['From'] = #<Your gmail id>
+	msg['To'] = #<Target email id (can be any service)>
 	email = msg['From']
 
 	#creating an object for Disk class
