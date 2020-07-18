@@ -12,11 +12,13 @@ class Disk(object):
     #Graph Settings
     STYLE = 'solid' #linestyle in the plot_date method
     GRAPH_STYLE = 'dark_background' #check available styles using plt.style.availabe
-
     #variables used
     graph_usuage = []
     graph_date = []
     drive_info = {}
+
+    #Config
+    SKIP_LINES = 3 #First 3 lines in linux are temp memories
     # this runs the df -h command on terminal and pipes the output to a temp
     # file
     @classmethod
@@ -40,29 +42,18 @@ class Disk(object):
         path = os.getcwd()
 
         with open(os.path.join(path, 'classes/Config/DiskUsuage.txt'), 'r') as f:
-            a = f.readlines()
+            disk_data = f.readlines()[SKIP_LINES:]
 
-        check = len(a)
+        for data in disk_data:
+            data = data.split()
 
-        for i in range(check):
-            # 3 because df -h returns the output for temp folders which in this
-            # case is not required (for me)
-            i += 1
+            drive = data[0]
+            total = int(data[1][:-1])
+            used = float(data[2][:-1])
+            available = float(data[3][:-1])
+            percent_used = float(data[4][:-1])
 
-            # 0:2 for windows # Parsing throught the string to get only  drive
-            # name
-            drive = a[i][0:2]
-            # 0:9 for linux
-
-            # 16:19 for windows and linux #Parsing throught the string to get
-            # only the total memory allocated
-            total = int(a[i][16:19])
-
-            # 23:25 for windows #Parsing throught the string to get only the
-            # used memory
-            used = float(a[i][23:25])
-            # 22:25 for linux
-
+            #graph wala
             year = time.localtime().tm_year
             month = time.localtime().tm_mon
             day = time.localtime().tm_mday 
@@ -90,7 +81,7 @@ class Disk(object):
             # print(f'Drive: {drive}, Total Space: {total} GB ,Used Space:
             # {used} GB, Available: {total - used} GB, % Used: {int((lambda :
             # (used/total)*100)())} %')
-            cls.ret_fun(drive=drive, total=total, used=used)
+            cls.ret_fun(drive=drive, total=total, used=used,available=available,percent_used=percent_used)
             del path
             break
 

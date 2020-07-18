@@ -26,11 +26,10 @@ def moniter():
     disk_info = disk_object.drive_info
 
     # retriving relavent info
-    drive, total, used = disk_info[
-        'drive'], disk_info['total'], disk_info['used']
+    drive, total, used,available,percent_used = disk_info['drive'], disk_info['total'], disk_info['used'],disk_info['available'], disk_info['percent_used'],
 
     # formatting the type of message to be sent
-    message = f'Disk Usuage of the Server Drive : {drive}\nTotal: {total}GB\nUsed:{used}GB'
+    message = f'Disk Usuage Summary\nDrive : {drive}\nTotal: {total} GB\nUsed: {used} GB\nAvailable: {available} GB\nUsed Disk: {percent_used}%'
 
     # opening the the graph
     path = os.getcwd()
