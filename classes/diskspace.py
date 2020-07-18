@@ -9,23 +9,25 @@ import pickle
 
 
 class Disk(object):
-    #Graph Settings
-    STYLE = 'solid' #linestyle in the plot_date method
-    GRAPH_STYLE = 'dark_background' #check available styles using plt.style.availabe
-    #variables used
+    # Graph Settings
+    STYLE = 'solid'  # linestyle in the plot_date method
+    GRAPH_STYLE = 'dark_background'  # check available styles using plt.style.availabe
+    # variables used
     graph_usuage = []
     graph_date = []
     drive_info = {}
 
-    #Config
-    SKIP_LINES = 3 #First 3 lines in linux are temp memories
+    # Config
+    SKIP_LINES = 3  # First 3 lines in linux are temp disks
+
     # this runs the df -h command on terminal and pipes the output to a temp
     # file
     @classmethod
     def read_sys(cls):
         path = os.getcwd()
         with open(os.path.join(path, 'classes/Config/DiskUsuage.txt'), 'w') as f:
-            file_data = subprocess.run('df -h', shell=True, text=True, stdout=f)
+            file_data = subprocess.run(
+                'df -h', shell=True, text=True, stdout=f)
         del path
 
     # this appends all the relavent info to the drive_info dictionary which is
@@ -42,7 +44,7 @@ class Disk(object):
         path = os.getcwd()
 
         with open(os.path.join(path, 'classes/Config/DiskUsuage.txt'), 'r') as f:
-            disk_data = f.readlines()[SKIP_LINES:]
+            disk_data = f.readlines()[cls.SKIP_LINES:]
 
         for data in disk_data:
             data = data.split()
@@ -53,12 +55,12 @@ class Disk(object):
             available = float(data[3][:-1])
             percent_used = float(data[4][:-1])
 
-            #graph wala
+            # graph wala
             year = time.localtime().tm_year
             month = time.localtime().tm_mon
-            day = time.localtime().tm_mday 
+            day = time.localtime().tm_mday
 
-            # TODO: Make the plot better 
+            # TODO: Make the plot better
             date = datetime.datetime(year, month, day)
             '''
             Year day over month day because at the start of each month the x-axis becomes 0; this causes a hard to read graph
@@ -81,7 +83,8 @@ class Disk(object):
             # print(f'Drive: {drive}, Total Space: {total} GB ,Used Space:
             # {used} GB, Available: {total - used} GB, % Used: {int((lambda :
             # (used/total)*100)())} %')
-            cls.ret_fun(drive=drive, total=total, used=used,available=available,percent_used=percent_used)
+            cls.ret_fun(drive=drive, total=total, used=used,
+                        available=available, percent_used=percent_used)
             del path
             break
 
@@ -129,7 +132,8 @@ class Disk(object):
         plt.xlabel('Date --->')
         plt.ylabel('Space Used (GB)--->')
 
-        plt.plot_date(cls.graph_date, cls.graph_usuage,label='Used Space',linestyle=cls.STYLE)
+        plt.plot_date(cls.graph_date, cls.graph_usuage,
+                      label='Used Space', linestyle=cls.STYLE)
 
         plt.gcf().autofmt_xdate()
 
@@ -141,7 +145,7 @@ class Disk(object):
         plt.tight_layout()
         plt.legend()
 
-        plt.savefig(os.path.join(path,'classes/Config/Graph.png'))
+        plt.savefig(os.path.join(path, 'classes/Config/Graph.png'))
         array = [cls.graph_date, cls.graph_usuage]
         cls.update(array)
 
@@ -150,7 +154,6 @@ class Disk(object):
     def clear_mem(cls):
         path = os.getcwd()
         os.remove(os.path.join(path, 'classes/Config/DiskUsuage.txt'))
-    
 
     # this method makes it easier to run each method of the class in
     # order.
@@ -159,5 +162,5 @@ class Disk(object):
         cls.read_sys()
         cls.check_prev()
         cls.read_data()
-        cls.save_data() #also updates the previous
+        cls.save_data()  # also updates the previous
         cls.clear_mem()
